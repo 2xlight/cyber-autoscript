@@ -1,31 +1,113 @@
 #!/bin/bash
 
-read -p "Input >  " data
+while true; do
+    echo "========================="
+    echo "       MENU CHÍNH        "
+    echo "========================="
+    echo "  I > Encode"
+    echo " II > Decode"
+    echo "III > Exit"
+    read -r -p "Input > " main_choice
 
-echo
-echo "1 >  Base64"
-echo "2 >  URL"
-echo "3 >  Hex"
+    case "$main_choice" in
+        I)
+            while true; do
+                echo
+                echo "ENCODE"
+                echo "1 > Base64"
+                echo "2 > URL"
+                echo "3 > Hex"
+                echo "4 > ROT13"
+                echo "5 > MAIN MENU"
+                read -r -p "Input > " enc_choice
 
-read -p "Choose >  " choice
+                if [[ "$enc_choice" == "5" ]]; then
+                    break
+                fi
 
-case "$choice" in
+                read -r -p "Input > " data
 
-    1)
-        echo "$data" | base64 -d
-        ;;
+                case "$enc_choice" in
+                    1)
+                        output=$(printf '%s' "$data" | base64)
+                        echo "Output > $output"
+                        ;;
+                    2)
+                        output=$(
+printf '%s' "$data" | python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.stdin.read()))"
+                                )
+                        echo "Output > $output"
+                        ;;
+                    3)
+                        output=$(
+printf '%s' "$data" | xxd -p | tr -d '\n'
+                                )
+                        echo "Output > $output"
+                        ;;
+                    4)
+                        output=$(
+printf '%s' "$data" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+                                )
+                        echo "Output > $output"
+                        ;;
+                    *)
+                        echo " > Invalid."
+                        ;;
+                esac
+            done
+            ;;
 
-    2)
-        printf '%b\n' "${data//%/\\x}" 
-        ;;
+        2) 
+            while true; do
+                echo
+                echo "-DECODE"
+                echo "1 > Base64"
+                echo "2 > URL"
+                echo "3 > Hex"
+                echo "4 > ROT13"
+                echo "5 > MAIN MENU"
+                read -r -p "Input > " dec_choice
 
-    3)
-        echo "$data" | xxd -r -p
-        ;;
+                if [[ "$dec_choice" == "5" ]]; then
+                    break
+                fi
 
-    *)
-        echo ">  "
-        exit 1
-        ;;
+                read -r -p "Input > " data
 
-esac
+                case "$dec_choice" in
+                    1)
+                        output=$(printf '%s' "$data" | base64 -d)
+                        echo "Output > $output"
+                        ;;
+                    2)
+                        output=$(printf '%b' "${data//%/\\x}")
+                        echo "Output > $output"
+                        ;;
+                    3)
+                        output=$(printf '%s' "$data" | xxd -r -p)
+                        echo "Output > $output"
+                        ;;
+                    4)
+                        output=$(
+printf '%s' "$data" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+                                )
+                        echo "Output > $output"
+                        ;;
+                    *)
+                        echo " > Invalid."
+                        ;;
+                esac
+            done
+            ;;
+
+        3)
+            echo "See you soon."
+            exit 0
+            ;;
+
+        *)
+            echo " > Invalid."
+            ;;
+    esac
+    echo
+done

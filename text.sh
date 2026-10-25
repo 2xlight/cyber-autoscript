@@ -1,37 +1,62 @@
 #!/bin/bash
 
-read -r -p "Input >  " text
+while true; do
+    read -r -p "Input > " text
+    
+    if [[ "$text" == "exit" OR "^C" ]]; then
+        echo "See you soon."
+        break
+    fi
 
-echo
-echo "1 >  TEXT"
-echo "2 >  Text"
-echo "3 >  text"
-echo "4 >  TeXt"
-read -r -p "Choose > " choice
+    echo
+    echo "1 >  TEXT"
+    echo "2 >  Text"
+    echo "3 >  text"
+    echo "4 >  TeXt"
+    echo "5 >  EXIT"
 
-case "$choice" in
-    1)
-        output=$(python3 -c "import sys; print(sys.stdin.read().upper())" <<< "$text")
-        echo "Output >  $output"
-        ;;
+    read -r -p "Choose > " choice
 
-    2)
-        output=$(python3 -c "import sys; s = sys.stdin.read(); print(s[:1].upper() + s[1:].lower())" <<< "$text")
-        echo "Output >  $output"
-        ;;
+    case "$choice" in
+        1)
+            output=$(
+python3 -c "import sys; print(sys.stdin.read().upper())" <<< "$text"
+# sys.stdin.read() - read all, then upper()
+                    )
+            echo "Output >  $output"
+            ;;
 
-    3)
-        output=$(python3 -c "import sys; print(sys.stdin.read().lower())" <<< "$text")
-        echo "Output >  $output"
-        ;;
+        2)
+            output=$(
+python3 -c "import sys; s = sys.stdin.read(); print(s[:1].upper() + s[1:].lower())" <<< "$text"
+#first is upper and then lower
+                    )
+            echo "Output >  $output"
+            ;;
 
-    4)
-        output=$(python3 -c "import sys; print(sys.stdin.read().title())" <<< "$text")
-        echo "Output >  $output"
-        ;;
+        3)
+            output=$(
+python3 -c "import sys; print(sys.stdin.read().lower())" <<< "$text"
+# lower
+                    )
+            echo "Output >  $output"
+            ;;
 
-    *)
-        echo " >  :("
-        exit 1
-        ;;
-esac
+        4)
+            output=$(
+python3 -c "import sys; print(sys.stdin.read().title())" <<< "$text"
+# tittle
+                    )
+            echo "Output >  $output"
+            ;;
+
+        5)
+            echo "exit."
+            break
+            ;;
+
+        *)
+            echo " >  Invalid."
+            ;;
+    esac
+done
