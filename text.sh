@@ -3,7 +3,7 @@
 while true; do
     read -r -p "Input > " text
     
-    if [[ "$text" == "exit" OR "^C" ]]; then
+    if [[ "$text" == "exit" || "$text" == "quit" ]]; then
         echo "See you soon."
         break
     fi
@@ -13,7 +13,8 @@ while true; do
     echo "2 >  Text"
     echo "3 >  text"
     echo "4 >  TeXt"
-    echo "5 >  EXIT"
+    echo "5 >  txet"
+    echo "6 >  EXIT"
 
     read -r -p "Choose > " choice
 
@@ -28,8 +29,8 @@ python3 -c "import sys; print(sys.stdin.read().upper())" <<< "$text"
 
         2)
             output=$(
-python3 -c "import sys; s = sys.stdin.read(); print(s[:1].upper() + s[1:].lower())" <<< "$text"
-#first is upper and then lower
+python3 -c "import sys; s = sys.stdin.read(); print(s.capitalize())" <<< "$text"
+#first is upper and then lower s[:1].upper() + s[1:].lower()
                     )
             echo "Output >  $output"
             ;;
@@ -49,8 +50,12 @@ python3 -c "import sys; print(sys.stdin.read().title())" <<< "$text"
                     )
             echo "Output >  $output"
             ;;
-
         5)
+            output=$(
+python3 -c "import sys; print(sys.stdin.read()[::-1])" <<< "$text"
+                    )
+
+        6)
             echo "exit."
             break
             ;;
