@@ -2,24 +2,26 @@
 
 while true; do
     echo "========================="
-    echo "       MENU CHÍNH        "
+    echo "        MAIN MENU        "
     echo "========================="
-    echo "  I > Encode"
-    echo " II > Decode"
-    echo "III > Exit"
-    read -r -p "Input > " main_choice
+    echo "  I >  ENCODE"
+    echo " II >  DECODE"
+    echo "III >  EXIT"
+    IFS= read -r -p "Input > " main_choice
 
     case "$main_choice" in
-        I)
+
+    #=================== ENCODE =======================
+        I) 
             while true; do
-                echo
-                echo "ENCODE"
-                echo "1 > Base64"
-                echo "2 > URL"
-                echo "3 > Hex"
-                echo "4 > ROT13"
-                echo "5 > MAIN MENU"
+                echo "==== ENCODE ===="
+                echo "1 >  Base64"
+                echo "2 >  URL"
+                echo "3 >  Hex"
+                echo "4 >  ROT13"
+                echo "5 >  MAIN MENU"
                 read -r -p "Input > " enc_choice
+
 
                 if [[ "$enc_choice" == "5" ]]; then
                     break
@@ -30,26 +32,36 @@ while true; do
                 case "$enc_choice" in
                     1)
                         output=$(printf '%s' "$data" | base64)
+                        # du lieu la mot doi so
                         echo "Output > $output"
                         ;;
+
                     2)
                         output=$(
 printf '%s' "$data" | python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.stdin.read()))"
+                                                                    #%XX
                                 )
                         echo "Output > $output"
                         ;;
+
                     3)
                         output=$(
-printf '%s' "$data" | xxd -p | tr -d '\n'
+printf '%s' "$data" | xxd -p | tr -d '\n' #xoa moi \n
+                    # hex thauan (plain) 
                                 )
                         echo "Output > $output"
                         ;;
+
                     4)
                         output=$(
-printf '%s' "$data" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+printf '%s' "$data" | LC_ALL=C tr 'A-Za-z' 'N-ZA-Mn-za-m'
+# tr SET1 SET2
+# SET1 = A-Za-z
+# SET2 = N-ZA-Mn-za-m
                                 )
                         echo "Output > $output"
                         ;;
+
                     *)
                         echo " > Invalid."
                         ;;
@@ -57,10 +69,11 @@ printf '%s' "$data" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
             done
             ;;
 
-        2) 
+        #=================== DECODE ===================
+        II) 
             while true; do
                 echo
-                echo "-DECODE"
+                echo "==== DECODE ===="
                 echo "1 > Base64"
                 echo "2 > URL"
                 echo "3 > Hex"
@@ -68,6 +81,7 @@ printf '%s' "$data" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
                 echo "5 > MAIN MENU"
                 read -r -p "Input > " dec_choice
 
+                
                 if [[ "$dec_choice" == "5" ]]; then
                     break
                 fi
@@ -77,14 +91,20 @@ printf '%s' "$data" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
                 case "$dec_choice" in
                     1)
                         output=$(printf '%s' "$data" | base64 -d)
+                        # du lieu la mot doi so
                         echo "Output > $output"
                         ;;
                     2)
-                        output=$(printf '%b' "${data//%/\\x}")
+                        output=$(
+python3 -c "import urllib.parse,sys; print(urllib.parse.unquote_plus(sys.stdin.read()))"
+                        )
+                        # %  -> \x
+                        # \\ -> \
                         echo "Output > $output"
                         ;;
                     3)
                         output=$(printf '%s' "$data" | xxd -r -p)
+                                                    # reverse plain
                         echo "Output > $output"
                         ;;
                     4)
@@ -100,7 +120,8 @@ printf '%s' "$data" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
             done
             ;;
 
-        3)
+        #================ EXIT ===============
+        III)
             echo "See you soon."
             exit 0
             ;;
