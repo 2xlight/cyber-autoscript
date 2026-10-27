@@ -1,30 +1,24 @@
 #!/bin/bash
 
+set -uo pipefail
+
 while true; do
-    read -r -p "Input: > " file
+    IPF= read -r -p "Input: > " file || break
+    [[ "$file" == "exit" ]] && break
+    file="${file/#\~/$HOME}" #${var/#pattern/thay}
 
-    if [[ "$file" == "exit" ]]; then
-        echo "See you soon."
-        break
-    fi
-
-    if [ ! -f "$file" ]; then
-        echo " > Invalid."
-        echo
-        continue
-    fi
-
-    # Kiểm tra quyền đọc file
-    if [ ! -r "$file" ]; then
-        echo " > Can't read."
-        echo
+    if [[ ! -f "$file" || ! -r "$file" ]]; then
+        echo " > Invalid or unreadable."
         continue
     fi
 
     echo " > Start: $file ---"
-    while IFS= read -r line; do
-        echo "READ >  $line"
-    done < "$file"
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        printf 'READ >  %s\n' "$line" #trong truong hop co -n
+
+    done < "$file" # lay 1 dong tiep theo tu file
+
     echo " > Done."
-    echo
 done
+echo "See you soon."
